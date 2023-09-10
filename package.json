@@ -17,7 +17,39 @@
         "command": "easylife.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "configuration": {
+      "properties": {
+          "highlightLine.borderColor": {
+              "type": [
+                  "string"
+              ],
+              "default": "#65EAB9",
+              "description": "Change the border color. (Ex: 'red', '#FFF' #FFFFFFF, 'RGB(255,255,255)','RGB(255, 255, 255. 0.5) )"
+          },
+          "highlightLine.borderWidth": {
+              "type": [
+                  "string"
+              ],
+              "default": "2px"
+          },
+          "highlightLine.borderStyle": {
+              "type": [
+                  "string"
+              ],
+              "enum": [
+                  "solid",
+                  "dashed",
+                  "inset",
+                  "double",
+                  "groove",
+                  "outset",
+                  "ridge"
+              ],
+              "default": "solid"
+          }
+      }
+  }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

@@ -9,7 +9,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -24,7 +24,7 @@
               "type": [
                   "string"
               ],
-              "default": "#65EAB9",
+              "default": "#8cc540",
               "description": "Change the border color. (Ex: 'red', '#FFF' #FFFFFFF, 'RGB(255,255,255)','RGB(255, 255, 255. 0.5) )"
           },
           "highlightLine.borderWidth": {

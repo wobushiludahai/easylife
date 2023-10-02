@@ -56,13 +56,6 @@ class HighlightLine {
             }
 
             this.activeEditor = activeEditor
-            let word = activeEditor.document.getText(activeEditor.selection);
-            if (!word) {
-                console.log('Nothing selected');
-            } else {
-                console.log(word);
-            }
-
             this.highlightLine(this.decorationType);
         })
 

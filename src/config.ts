@@ -38,9 +38,6 @@ class HighlightConfig {
         const borderWidth = config.get("borderWidth");
         const borderStyle = config.get("borderStyle");
 
-        console.log(Color)
-        console.log(borderWidth)
-        console.log(borderStyle)
         const decorationType = window.createTextEditorDecorationType({
             isWholeLine: true,
             borderWidth: `0 0 ${borderWidth} 0`,

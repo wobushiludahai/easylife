@@ -1,97 +1,124 @@
-// 'use strict';
-// import { window, Range, TextEditorDecorationType } from "vscode";
-// import HighlightConfig from './config';
+"use strict";
+import { window, Range, TextEditorDecorationType, ThemableDecorationRenderOptions, OverviewRulerLane } from "vscode";
+import HighlightConfig from "./config";
 
-// export interface HighlighWordsTable {
-//     word: string;
-//     iswholeWord: boolean;
-//     ignoreCase: boolean;
-// }
+// 默认全词
+export interface HighlighWordsTable {
+    word: string;
+    ignoreCase: boolean;
+    decoration: TextEditorDecorationType;
+}
 
-// const qpOptions = ['ignore case', 'whole word', 'both']
+interface highlightWordsColors {
+    light: string
+    dark: string
+}
 
-// class HighlightWords {
-//     private words: HighlighWordsTable[]
+class HighlightWords {
+    private words: HighlighWordsTable[];
+    private colors: highlightWordsColors[];
+    private onlyBorder: boolean = false;
 
-//     constructor() {
-//         this.words = [];
-//     }
+    constructor() {
+        this.words = [];
 
-//     public updateDecorations(active?:any) {
-//         window.visibleTextEditors.forEach(editor => {
-//             if (active && editor.document != window.activeTextEditor.document) return;
-//             const text = editor.document.getText();
-//             let match;
-//             let decs = [];
-//             this.decorators.forEach(function () {
-//                 let dec = [];
-//                 decs.push(dec);
-//             });
-//             this.words.forEach((w, n) => {
-//                 const opts = w.ignoreCase ? 'gi' : 'g'
-//                 const expression = w.wholeWord ? '\\b' + w.expression + '\\b' : w.expression
-//                 const regEx = new RegExp(expression, opts);
-//                 this.ranges[w.expression] = []
-//                 while (match = regEx.exec(text)) {
-//                     const startPos = editor.document.positionAt(match.index);
-//                     const endPos = editor.document.positionAt(match.index + match[0].length);
-//                     const decoration = { range: new Range(startPos, endPos) };
-//                     decs[n % decs.length].push(decoration);
-//                     this.ranges[w.expression].push(decoration.range)
-//                 }
-//             });
-//             this.decorators.forEach(function (d, i) {
-//                 editor.setDecorations(d, decs[i]);
-//             });
-//             this.treeProvider.words = this.words
-//             this.treeProvider.refresh()
+        let highlightWordsConfig = HighlightConfig.getHighlightwordsConfig();
+        this.colors = highlightWordsConfig.colors;
+        this.onlyBorder = highlightWordsConfig.onlyBorder;
+    }
 
-//         })
+    public setDecorators(c: highlightWordsColors[]) { this.colors = c }
+    public setOnlyBorder(b: boolean) { this.onlyBorder = b }
 
-//     }
+    private createNewDecorator(index?: number): TextEditorDecorationType {
+        let randNumber = Math.floor(Math.random() * this.colors.length);
 
-//     public addSelected(withOptions?: boolean) {
-//         const activeEditor = window.activeTextEditor;
-// 		if (activeEditor == undefined) {
-// 			return
-// 		}
+        console.log("createNewDecorator called: ", randNumber);
 
-// 		let word = activeEditor.document.getText(activeEditor.selection);
-//         if(!word) {
-//             const range = activeEditor.document.getWordRangeAtPosition(activeEditor.selection.start)
-//             if(range) word = activeEditor.document.getText(range)
-//         }
-//         if (!word) {
-//             window.showInformationMessage('Nothing selected!')
-//             return;
-//         }
+        let color = this.colors[randNumber];
 
-//         const highlights = this.words.filter(w => w.word == word) // avoid duplicates
-//         if (!highlights || !highlights.length) {
-//             if (withOptions) {
-//                 window.showQuickPick(qpOptions).then(option => {
-//                     if (!option) return;
+        var dark: ThemableDecorationRenderOptions = {
+            overviewRulerColor: color.dark,
+            backgroundColor: this.onlyBorder ? 'inherit' : color.dark,
+            borderColor: color.dark
+        }
+        if (!this.onlyBorder)
+            dark.color = '#555555'
+        let decorationType = window.createTextEditorDecorationType({
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            overviewRulerLane: OverviewRulerLane.Right,
+            light: {
+                overviewRulerColor: color.light,
+                borderColor: color.light,
+                backgroundColor: this.onlyBorder ? 'inherit' : color.light
+            },
+            dark: dark
+        });
 
-//                     this.words.push({
-//                         word: word,
-//                         iswholeWord : option == 'whole word' || option == 'both',
-//                         ignoreCase: option == 'ignore case' || option == 'both'
-//                     });
-//                     this.updateDecorations()
-//                 })
-//             }
-//             else {
-//                 const ww = this.mode == Modes.WholeWord || this.mode == Modes.Both
-//                 const ic = this.mode == Modes.IgnoreCase || this.mode == Modes.Both
+        return decorationType
+    }
 
-//                 this.words.push({ expression: word, wholeWord: ww, ignoreCase: ic });
-//                 this.updateDecorations()
-//             }
-//         } else if(highlights.length) {
-//             this.words.splice(this.words.indexOf(highlights[0]),1)
-//             this.updateDecorations()
-//         }
-//     }
-// }
+    public updateDecorations(active?: any) {
+        window.visibleTextEditors.forEach(editor => {
+            if (active && window.activeTextEditor && editor.document != window.activeTextEditor.document) return;
+            const text = editor.document.getText();
+            let match;
+            this.words.forEach((w, n) => {
+                let decsRange: any = [];
+                const opts = w.ignoreCase ? 'gi' : 'g'
+                const regEx = new RegExp(w.word, opts);
+                while (match = regEx.exec(text)) {
+                    const startPos = editor.document.positionAt(match.index);
+                    const endPos = editor.document.positionAt(match.index + match[0].length);
+                    const decoration = { range: new Range(startPos, endPos) };
+                    decsRange.push(decoration);
+                }
 
-// export default HighlightWords
+                editor.setDecorations(w.decoration, decsRange);
+            });
+        })
+    }
+
+    public updateActive() {
+        this.updateDecorations(true)
+    }
+
+    public addSelected() {
+        const activeEditor = window.activeTextEditor;
+        if (activeEditor == undefined) {
+            return;
+        }
+
+        let word = activeEditor.document.getText(activeEditor.selection);
+        if (!word) {
+            // 光标置于某个单词上的场景
+            const range = activeEditor.document.getWordRangeAtPosition(
+                activeEditor.selection.start
+            );
+            if (range) word = activeEditor.document.getText(range);
+        }
+
+        if (!word) {
+            window.showInformationMessage("Nothing selected!");
+            return;
+        }
+
+        word = word.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") // raw selected text, not regexp
+        const highlights = this.words.filter(w => w.word == word)
+        if (!highlights || !highlights.length) {    // 未添加
+            this.words.push({ word: word, ignoreCase: false, decoration: this.createNewDecorator() });
+            this.updateDecorations()
+        } else if (highlights.length) {  // 已添加
+            let index = this.words.indexOf(highlights[0]);
+            window.visibleTextEditors.forEach(editor => {
+                console.log("remove highlighting Update")
+                this.words[index].decoration.dispose();
+            })
+
+            this.words.splice(index, 1)  // remove
+        }
+    }
+}
+
+export default HighlightWords;

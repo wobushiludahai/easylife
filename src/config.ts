@@ -1,10 +1,15 @@
 'use strict';
 import { workspace, TextEditorDecorationType, window } from "vscode"
 
-interface ConfigValues {
-    decorators: TextEditorDecorationType[]
-    defaultMode?: number,
-    showSidebar?: boolean
+interface highlightWordsConfig {
+    colors: highlightWordsColors[],
+    onlyBorder: boolean,
+    showSidebar: boolean
+}
+
+interface highlightWordsColors {
+    light: string
+    dark: string
 }
 
 interface highlightLineConfig {
@@ -13,23 +18,13 @@ interface highlightLineConfig {
 }
 
 class HighlightConfig {
-    static getConfigValues(): TextEditorDecorationType {
-        const config = workspace.getConfiguration("highlightLine")
-        const Color = config.get("borderColor");
-        const borderWidth = config.get("borderWidth");
-        const borderStyle = config.get("borderStyle");
+    static getHighlightwordsConfig(): highlightWordsConfig {
+        let config = workspace.getConfiguration('highlightwords')
+        let colors: highlightWordsColors[] = <highlightWordsColors[]>config.get('colors');
+        const onlyBorder = <boolean>config.get('onlyBorder')
+        const showSidebar = <boolean>config.get('showSidebar')
 
-        console.log(Color)
-        console.log(borderWidth)
-        console.log(borderStyle)
-        const decorationType = window.createTextEditorDecorationType({
-            isWholeLine: true,
-            borderWidth: `0 0 ${borderWidth} 0`,
-            borderStyle: `${borderStyle}`,
-            borderColor: `${Color}`
-        })
-
-        return decorationType;
+        return {colors, onlyBorder, showSidebar}
     }
 
     static getHighlightLineConfig():highlightLineConfig {

@@ -32,9 +32,6 @@ class HighlightWords {
 
     private createNewDecorator(index?: number): TextEditorDecorationType {
         let randNumber = Math.floor(Math.random() * this.colors.length);
-
-        console.log("createNewDecorator called: ", randNumber);
-
         let color = this.colors[randNumber];
 
         var dark: ThemableDecorationRenderOptions = {
@@ -84,6 +81,13 @@ class HighlightWords {
         this.updateDecorations(true)
     }
 
+    public removeAllDecorations() {
+        this.words.forEach((w, n) => {
+            this.words[n].decoration.dispose();
+            this.words.splice(n, 1)  // remove
+        });
+    }
+
     public addSelected() {
         const activeEditor = window.activeTextEditor;
         if (activeEditor == undefined) {
@@ -111,11 +115,7 @@ class HighlightWords {
             this.updateDecorations()
         } else if (highlights.length) {  // 已添加
             let index = this.words.indexOf(highlights[0]);
-            window.visibleTextEditors.forEach(editor => {
-                console.log("remove highlighting Update")
-                this.words[index].decoration.dispose();
-            })
-
+            this.words[index].decoration.dispose();
             this.words.splice(index, 1)  // remove
         }
     }

@@ -33,6 +33,11 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 			}, 500);
         }
     }, null, context.subscriptions);
+
+
+	// 侧边栏
+	let configValues = HighlightConfig.getHighlightwordsConfig()
+	commands.executeCommand('setContext', 'showSidebar', configValues.showSidebar)
 }
 
 export async function activate(context: vscode.ExtensionContext) {

@@ -1,9 +1,9 @@
 "use strict";
-import { window, Range, TextEditorDecorationType, ThemableDecorationRenderOptions, OverviewRulerLane } from "vscode";
+import { window, Range, TextEditorDecorationType, ThemableDecorationRenderOptions, OverviewRulerLane, TreeItem } from "vscode";
 import HighlightConfig from "./config";
 
 // 默认全词
-export interface HighlighWordsTable {
+interface HighlighWordsTable {
     word: string;
     ignoreCase: boolean;
     decoration: TextEditorDecorationType;

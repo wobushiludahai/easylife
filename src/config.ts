@@ -7,7 +7,7 @@ interface highlightWordsConfig {
     showSidebar: boolean
 }
 
-interface highlightWordsColors {
+export interface highlightWordsColors {
     light: string
     dark: string
 }

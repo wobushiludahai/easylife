@@ -1,123 +1,164 @@
 {
-  "name": "easylife",
-  "displayName": "EasyLife",
-  "description": "Some Plug-in",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.81.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": ["*"],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "easylife.highlightwords",
-        "title": "Highlight selected words"
-      }
+    "name": "easylife",
+    "displayName": "EasyLife",
+    "description": "Some Plug-in",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.81.0"
+    },
+    "categories": [
+        "Other"
     ],
-	"keybindings": [
-		{
-			"command": "easylife.highlightwords",
-			"key": "f8",
-			"when": "editorTextFocus"
-		}
-	],
-    "configuration": {
-      "properties": {
-          "highlightLine.borderColor": {
-              "type": [
-                  "string"
-              ],
-              "default": "#8cc540",
-              "description": "Change the border color. (Ex: 'red', '#FFF' #FFFFFFF, 'RGB(255,255,255)','RGB(255, 255, 255. 0.5) )"
-          },
-          "highlightLine.borderWidth": {
-              "type": [
-                  "string"
-              ],
-              "default": "2px"
-          },
-          "highlightLine.borderStyle": {
-              "type": [
-                  "string"
-              ],
-              "enum": [
-                  "solid",
-                  "dashed",
-                  "inset",
-                  "double",
-                  "groove",
-                  "outset",
-                  "ridge"
-              ],
-              "default": "solid"
-          },
-          "highlightwords.colors": {
-            "default": [
-                {
-                    "light": "#b3d9ff",
-                    "dark": "cyan"
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "easylife.highlightwords",
+                "title": "Highlight selected words"
+            },
+            {
+                "command": "highlightwords.findPrevious",
+                "title": "Back",
+                "icon": {
+                    "light": "resources/icons/arrow-left.svg",
+                    "dark": "resources/icons/arrow-left-white.svg"
+                }
+            },
+            {
+                "command": "highlightwords.findNext",
+                "title": "Next",
+                "icon": {
+                    "light": "resources/icons/arrow-right.svg",
+                    "dark": "resources/icons/arrow-right-white.svg"
+                }
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "easylife.highlightwords",
+                "key": "f8",
+                "when": "editorTextFocus"
+            }
+        ],
+        "configuration": {
+            "properties": {
+                "highlightLine.borderColor": {
+                    "type": [
+                        "string"
+                    ],
+                    "default": "#8cc540",
+                    "description": "Change the border color. (Ex: 'red', '#FFF' #FFFFFFF, 'RGB(255,255,255)','RGB(255, 255, 255. 0.5) )"
                 },
-                {
-                    "light": "#e6ffb3",
-                    "dark": "pink"
+                "highlightLine.borderWidth": {
+                    "type": [
+                        "string"
+                    ],
+                    "default": "2px"
                 },
-                {
-                    "light": "#b3b3ff",
-                    "dark": "lightgreen"
+                "highlightLine.borderStyle": {
+                    "type": [
+                        "string"
+                    ],
+                    "enum": [
+                        "solid",
+                        "dashed",
+                        "inset",
+                        "double",
+                        "groove",
+                        "outset",
+                        "ridge"
+                    ],
+                    "default": "solid"
                 },
-                {
-                    "light": "#ffd9b3",
-                    "dark": "magenta"
+                "highlightwords.colors": {
+                    "default": [
+                        {
+                            "light": "#b3d9ff",
+                            "dark": "cyan"
+                        },
+                        {
+                            "light": "#e6ffb3",
+                            "dark": "pink"
+                        },
+                        {
+                            "light": "#b3b3ff",
+                            "dark": "lightgreen"
+                        },
+                        {
+                            "light": "#ffd9b3",
+                            "dark": "magenta"
+                        },
+                        {
+                            "light": "#ffb3ff",
+                            "dark": "cornflowerblue"
+                        },
+                        {
+                            "light": "#b3ffb3",
+                            "dark": "orange"
+                        },
+                        {
+                            "light": "#ffff80",
+                            "dark": "green"
+                        },
+                        {
+                            "light": "#d1e0e0",
+                            "dark": "red"
+                        }
+                    ]
                 },
-                {
-                    "light": "#ffb3ff",
-                    "dark": "cornflowerblue"
+                "highlightwords.onlyBorder": {
+                    "default": false
                 },
+                "highlightwords.showSidebar": {
+                    "default": true
+                }
+            }
+        },
+        "views": {
+            "explorer": [
                 {
-                    "light": "#b3ffb3",
-                    "dark": "orange"
-                },
-                {
-                    "light": "#ffff80",
-                    "dark": "green"
-                },
-                {
-                    "light": "#d1e0e0",
-                    "dark": "red"
+                    "id": "hilightWordsExplore",
+                    "name": "Highlights",
+                    "when": "showSidebar"
                 }
             ]
         },
-        "highlightwords.onlyBorder": {
-            "default":false
-        },
-        "highlightwords.showSidebar": {
-            "default": true
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "highlightwords.findPrevious",
+                    "when": "view == hilightWordsExplore",
+                    "group": "inline"
+                },
+                {
+                    "command": "highlightwords.findNext",
+                    "when": "view == hilightWordsExplore",
+                    "group": "inline"
+                }
+            ]
         }
-      }
-  }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.81.0",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "16.x",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
-    "eslint": "^8.47.0",
-    "glob": "^10.3.3",
-    "mocha": "^10.2.0",
-    "typescript": "^5.1.6",
-    "@vscode/test-electron": "^2.3.4"
-  }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.81.0",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "16.x",
+        "@typescript-eslint/eslint-plugin": "^6.4.1",
+        "@typescript-eslint/parser": "^6.4.1",
+        "eslint": "^8.47.0",
+        "glob": "^10.3.3",
+        "mocha": "^10.2.0",
+        "typescript": "^5.1.6",
+        "@vscode/test-electron": "^2.3.4"
+    }
 }

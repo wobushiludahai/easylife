@@ -124,7 +124,7 @@
         "views": {
             "explorer": [
                 {
-                    "id": "hilightWordsExplore",
+                    "id": "highlightWordsSidebar",
                     "name": "Highlights",
                     "when": "showSidebar"
                 }
@@ -134,16 +134,16 @@
             "view/item/context": [
                 {
                     "command": "easylife.highlightWordsRemove",
-                    "when": "view == hilightWordsExplore"
+                    "when": "view == highlightWordsSidebar"
                 },
                 {
                     "command": "easylife.highlightWordsfindPrevious",
-                    "when": "view == hilightWordsExplore",
+                    "when": "view == highlightWordsSidebar",
                     "group": "inline"
                 },
                 {
                     "command": "easylife.highlightWordsfindNext",
-                    "when": "view == hilightWordsExplore",
+                    "when": "view == highlightWordsSidebar",
                     "group": "inline"
                 }
             ]

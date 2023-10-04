@@ -1,25 +1,25 @@
 'use strict';
-import  { HighlighWordsTable } from './highlightwords'
+import { HighlighWordsTable } from './highlightwords'
 import { TreeDataProvider, TreeItem, Event, EventEmitter, Command } from 'vscode'
 
-interface SearchLocation {
+interface Location {
     index: number
     count: number
 }
 
 class HighlightTreeProvider implements TreeDataProvider<HighlightNode> {
-    // public currentExpression: string
-    // public currentIndex: SearchLocation
-	private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
+    private currentWord: string = ''
+    private currentIndex: Location = { index: 0, count: 0 }
+    private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
     readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 
-    constructor(public words: HighlighWordsTable[]) {}
+    constructor(public words: HighlighWordsTable[]) { }
 
     getTreeItem(element: HighlightNode): TreeItem {
-		return element;
-	}
+        return element;
+    }
 
-	getChildren(element?: HighlightNode): Thenable<HighlightNode[]> {
+    getChildren(element?: HighlightNode): Thenable<HighlightNode[]> {
         let nodes: HighlightNode[] = this.words.map(w => {
             return new HighlightNode(w.word, w, this)
         })
@@ -28,37 +28,55 @@ class HighlightTreeProvider implements TreeDataProvider<HighlightNode> {
 
     public refresh(words: HighlighWordsTable[]): any {
         this.words = words;
-		this._onDidChangeTreeData.fire(null);
-	}
+        this._onDidChangeTreeData.fire(null);
+    }
 
+    public setCurrentWord(word: string): void {
+        this.currentWord = word;
+    }
+
+    public getCurrentWord(): string {
+        return this.currentWord;
+    }
+
+    public setCurrentIndex(index: number, count: number): void {
+        this.currentIndex = {index:index, count:count};
+    }
+
+    public getCurrentIndex(): Location {
+        return this.currentIndex;
+    }
 }
 
 export class HighlightNode extends TreeItem {
-
-	constructor(
+    constructor(
         public readonly label: string,
         public readonly highlight: HighlighWordsTable,
         public provider: HighlightTreeProvider,
         public readonly command?: Command
 
-	) {
-		super(label);
+    ) {
+        super(label);
     }
 
-    // private getOpts(): string {
-    //     return "wholeWord"
-    // }
+    private getOpts(): string {
+        const index = this.highlight.word == this.provider.getCurrentWord() ?
+        ` ${this.provider.getCurrentIndex().index}/${this.provider.getCurrentIndex().count}` : ''
 
-	// get tooltip(): string {
-	// 	return `${this.label}-${this.getOpts()}`;
-	// }
+        return index
+    }
 
-	// get description(): string {
-	// 	return this.getOpts()
-	// }
+    // @ts-ignore
+    get description():string {
+    	return this.getOpts()
+    }
 
-	contextValue = 'highlights';
+    // @ts-ignore
+	get tooltip(): string {
+		return ''
+	}
 
+    contextValue = 'highlights';
 }
 
 export default HighlightTreeProvider

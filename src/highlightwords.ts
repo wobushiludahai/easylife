@@ -20,16 +20,18 @@ class HighlightWords {
     private colors: highlightWordsColors[];
     private onlyBorder: boolean = false;
     private treeProvider: HighlightTreeProvider;
+    private ranges: any;
 
     constructor() {
         this.words = [];
+        this.ranges = [];
 
         let highlightWordsConfig = HighlightConfig.getHighlightwordsConfig();
         this.colors = highlightWordsConfig.colors;
         this.onlyBorder = highlightWordsConfig.onlyBorder;
 
         this.treeProvider = new HighlightTreeProvider(this.getWords());
-        window.registerTreeDataProvider('hilightWordsExplore', this.treeProvider);
+        window.registerTreeDataProvider('highlightWordsSidebar', this.treeProvider);
     }
 
     public setDecorators(c: highlightWordsColors[]) { this.colors = c }
@@ -38,6 +40,26 @@ class HighlightWords {
 
     private updateSidebar() {
         this.treeProvider.refresh(this.words)
+    }
+
+    public updateSidebarIndex(word: string, range: Range) {
+        this.treeProvider.setCurrentWord(word);
+        this.treeProvider.setCurrentIndex(0, 0);
+        Object.keys(this.ranges[word]).some((r, i) => {
+            const thisrange: Range = this.ranges[word][i]
+            if (thisrange.start.character == range.start.character && thisrange.start.line == range.start.line) {
+                this.treeProvider.setCurrentIndex(i + 1, this.ranges[word].length);
+                return true
+            }
+        })
+
+        this.updateSidebar();
+    }
+
+    public clearSidebarIndex(){
+        this.treeProvider.setCurrentWord('');
+        this.treeProvider.setCurrentIndex(0, 0);
+        this.updateSidebar();
     }
 
     private createNewDecorator(index?: number): TextEditorDecorationType {
@@ -75,11 +97,13 @@ class HighlightWords {
                 let decsRange: any = [];
                 const opts = w.ignoreCase ? 'gi' : 'g'
                 const regEx = new RegExp(w.word, opts);
+                this.ranges[w.word] = []
                 while (match = regEx.exec(text)) {
                     const startPos = editor.document.positionAt(match.index);
                     const endPos = editor.document.positionAt(match.index + match[0].length);
                     const decoration = { range: new Range(startPos, endPos) };
                     decsRange.push(decoration);
+                    this.ranges[w.word].push(decoration.range)
                 }
 
                 editor.setDecorations(w.decoration, decsRange);
@@ -95,6 +119,7 @@ class HighlightWords {
 
     public removeAllDecorations() {
         this.words.forEach((w, n) => {
+            this.ranges[w.word] = []
             this.words[n].decoration.dispose();
             this.words.splice(n, 1)  // remove
         });
@@ -110,6 +135,7 @@ class HighlightWords {
             window.showInformationMessage("None added!");
         } else if (highlights.length) {  // 已添加
             let index = this.words.indexOf(highlights[0]);
+            this.ranges[this.words[index].word] = []
             this.words[index].decoration.dispose();
             this.words.splice(index, 1);    //remove words
 

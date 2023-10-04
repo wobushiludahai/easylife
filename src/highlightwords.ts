@@ -45,6 +45,7 @@ class HighlightWords {
     public updateSidebarIndex(word: string, range: Range) {
         this.treeProvider.setCurrentWord(word);
         this.treeProvider.setCurrentIndex(0, 0);
+
         Object.keys(this.ranges[word]).some((r, i) => {
             const thisrange: Range = this.ranges[word][i]
             if (thisrange.start.character == range.start.character && thisrange.start.line == range.start.line) {
@@ -56,7 +57,7 @@ class HighlightWords {
         this.updateSidebar();
     }
 
-    public clearSidebarIndex(){
+    public clearSidebarIndex() {
         this.treeProvider.setCurrentWord('');
         this.treeProvider.setCurrentIndex(0, 0);
         this.updateSidebar();
@@ -90,20 +91,27 @@ class HighlightWords {
 
     public updateDecorations(active?: any) {
         window.visibleTextEditors.forEach(editor => {
-            if (active && window.activeTextEditor && editor.document != window.activeTextEditor.document) return;
+            const activeEditor = window.activeTextEditor
+
+            if (active && activeEditor && editor.document != activeEditor.document) return;
             const text = editor.document.getText();
             let match;
             this.words.forEach((w, n) => {
                 let decsRange: any = [];
                 const opts = w.ignoreCase ? 'gi' : 'g'
                 const regEx = new RegExp(w.word, opts);
-                this.ranges[w.word] = []
+
+                if (editor == activeEditor) {
+                    this.ranges[w.word] = []
+                }
                 while (match = regEx.exec(text)) {
                     const startPos = editor.document.positionAt(match.index);
                     const endPos = editor.document.positionAt(match.index + match[0].length);
                     const decoration = { range: new Range(startPos, endPos) };
                     decsRange.push(decoration);
-                    this.ranges[w.word].push(decoration.range)
+                    if (editor == activeEditor) {
+                        this.ranges[w.word].push(decoration.range)
+                    }
                 }
 
                 editor.setDecorations(w.decoration, decsRange);
@@ -135,6 +143,7 @@ class HighlightWords {
             window.showInformationMessage("None added!");
         } else if (highlights.length) {  // 已添加
             let index = this.words.indexOf(highlights[0]);
+\
             this.ranges[this.words[index].word] = []
             this.words[index].decoration.dispose();
             this.words.splice(index, 1);    //remove words

@@ -51,6 +51,7 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 		const nextStart = wrap ? 0 : 1
 		const text = doc.getText()
 		const slice = text.slice(offset + nextStart)
+		if(!e.highlight) return;
 		const opts = e.highlight.ignoreCase ? 'i' : ''
 
 		const re = new RegExp(e.highlight.word, opts)
@@ -85,6 +86,7 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 		const offset = doc.offsetAt(iAmHere)
 		const text = doc.getText()
 		const slice = text.slice(0, offset)
+		if(!e.highlight) return;
 		const opts = e.highlight.ignoreCase ? 'gi' : 'g'
 
 		const re = new RegExp(e.highlight.word, opts)
@@ -108,7 +110,6 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 		while ((found = re.exec(slice)) !== null) {
 			index = re.lastIndex
 			word = found[0]
-			console.log('last index', index)
 		}
 
 		if (!index || !word) return;

@@ -143,7 +143,7 @@ class HighlightWords {
             window.showInformationMessage("None added!");
         } else if (highlights.length) {  // 已添加
             let index = this.words.indexOf(highlights[0]);
-\
+
             this.ranges[this.words[index].word] = []
             this.words[index].decoration.dispose();
             this.words.splice(index, 1);    //remove words

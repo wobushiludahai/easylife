@@ -1,9 +1,10 @@
 "use strict";
 import { window, Range, TextEditorDecorationType, ThemableDecorationRenderOptions, OverviewRulerLane, TreeItem } from "vscode";
 import HighlightConfig from "./config";
+import HighlightTreeProvider from "./wordstree"
 
 // 默认全词
-interface HighlighWordsTable {
+export interface HighlighWordsTable {
     word: string;
     ignoreCase: boolean;
     decoration: TextEditorDecorationType;
@@ -18,6 +19,7 @@ class HighlightWords {
     private words: HighlighWordsTable[];
     private colors: highlightWordsColors[];
     private onlyBorder: boolean = false;
+    private treeProvider: HighlightTreeProvider;
 
     constructor() {
         this.words = [];
@@ -25,10 +27,18 @@ class HighlightWords {
         let highlightWordsConfig = HighlightConfig.getHighlightwordsConfig();
         this.colors = highlightWordsConfig.colors;
         this.onlyBorder = highlightWordsConfig.onlyBorder;
+
+        this.treeProvider = new HighlightTreeProvider(this.getWords());
+        window.registerTreeDataProvider('hilightWordsExplore', this.treeProvider);
     }
 
     public setDecorators(c: highlightWordsColors[]) { this.colors = c }
     public setOnlyBorder(b: boolean) { this.onlyBorder = b }
+    public getWords() { return this.words }
+
+    private updateSidebar() {
+        this.treeProvider.refresh(this.words)
+    }
 
     private createNewDecorator(index?: number): TextEditorDecorationType {
         let randNumber = Math.floor(Math.random() * this.colors.length);
@@ -74,6 +84,8 @@ class HighlightWords {
 
                 editor.setDecorations(w.decoration, decsRange);
             });
+
+            this.updateSidebar();
         })
     }
 
@@ -86,6 +98,8 @@ class HighlightWords {
             this.words[n].decoration.dispose();
             this.words.splice(n, 1)  // remove
         });
+
+        this.updateSidebar();
     }
 
     public addSelected() {
@@ -116,7 +130,9 @@ class HighlightWords {
         } else if (highlights.length) {  // 已添加
             let index = this.words.indexOf(highlights[0]);
             this.words[index].decoration.dispose();
-            this.words.splice(index, 1)  // remove
+            this.words.splice(index, 1);    //remove words
+
+            this.updateSidebar();
         }
     }
 }

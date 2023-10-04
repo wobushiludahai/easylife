@@ -3,6 +3,8 @@
     "displayName": "EasyLife",
     "description": "Some Plug-in",
     "version": "0.0.1",
+    "repository":"https://github.com/wobushiludahai/easylife",
+    "publisher": "landsea",
     "engines": {
         "vscode": "^1.81.0"
     },
@@ -10,7 +12,7 @@
         "Other"
     ],
     "activationEvents": [
-        "*"
+        "onCommand:easylife.highlightWordsAdd"
     ],
     "main": "./out/extension.js",
     "contributes": {

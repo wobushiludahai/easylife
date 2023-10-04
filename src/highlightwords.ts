@@ -102,6 +102,21 @@ class HighlightWords {
         this.updateSidebar();
     }
 
+    public removeSelected(word: string) {
+        if (!word) return;
+
+        const highlights = this.words.filter(w => w.word == word)
+        if (!highlights || !highlights.length) {    // 未添加
+            window.showInformationMessage("None added!");
+        } else if (highlights.length) {  // 已添加
+            let index = this.words.indexOf(highlights[0]);
+            this.words[index].decoration.dispose();
+            this.words.splice(index, 1);    //remove words
+
+            this.updateSidebar();
+        }
+    }
+
     public addSelected() {
         const activeEditor = window.activeTextEditor;
         if (activeEditor == undefined) {

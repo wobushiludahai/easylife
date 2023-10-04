@@ -13,9 +13,13 @@ function registerHighlightLine() {
 function registerHighlightWords(context: vscode.ExtensionContext) {
 	let highlightWord = new HighlightWords();
 
-	commands.registerCommand('easylife.highlightwords', function () {
+	commands.registerCommand('easylife.highlightWordsAdd', function () {
 		highlightWord.addSelected();
 	});
+
+    commands.registerCommand('easylife.highlightWordsRemove', e => {
+        highlightWord.removeSelected(e.label)
+    })
 
 	window.onDidChangeVisibleTextEditors(function (editor) {
         highlightWord.updateDecorations();

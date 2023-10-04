@@ -16,11 +16,15 @@
     "contributes": {
         "commands": [
             {
-                "command": "easylife.highlightwords",
+                "command": "easylife.highlightWordsAdd",
                 "title": "Highlight selected words"
             },
             {
-                "command": "highlightwords.findPrevious",
+                "command": "easylife.highlightWordsRemove",
+                "title": "Remove"
+            },
+            {
+                "command": "easylife.highlightWordsfindPrevious",
                 "title": "Back",
                 "icon": {
                     "light": "resources/icons/arrow-left.svg",
@@ -28,7 +32,7 @@
                 }
             },
             {
-                "command": "highlightwords.findNext",
+                "command": "easylife.highlightWordsfindNext",
                 "title": "Next",
                 "icon": {
                     "light": "resources/icons/arrow-right.svg",
@@ -38,7 +42,7 @@
         ],
         "keybindings": [
             {
-                "command": "easylife.highlightwords",
+                "command": "easylife.highlightWordsAdd",
                 "key": "f8",
                 "when": "editorTextFocus"
             }
@@ -129,12 +133,16 @@
         "menus": {
             "view/item/context": [
                 {
-                    "command": "highlightwords.findPrevious",
+                    "command": "easylife.highlightWordsRemove",
+                    "when": "view == hilightWordsExplore"
+                },
+                {
+                    "command": "easylife.highlightWordsfindPrevious",
                     "when": "view == hilightWordsExplore",
                     "group": "inline"
                 },
                 {
-                    "command": "highlightwords.findNext",
+                    "command": "easylife.highlightWordsfindNext",
                     "when": "view == hilightWordsExplore",
                     "group": "inline"
                 }

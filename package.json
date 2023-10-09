@@ -1,8 +1,8 @@
 {
     "name": "easylife",
     "displayName": "EasyLife",
-    "description": "Some Plug-in",
-    "version": "0.0.1",
+    "description": "A vscode plug-in to make the develop life easier",
+    "version": "0.0.2",
     "repository": "https://github.com/wobushiludahai/easylife",
     "publisher": "landsea",
     "engines": {

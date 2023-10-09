@@ -54,7 +54,7 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 		if(!e.highlight) return;
 		const opts = e.highlight.ignoreCase ? 'i' : ''
 
-		const re = new RegExp(e.highlight.word, opts)
+		const re = new RegExp('\\b' + e.highlight.word + '\\b', opts)
 		const pos = slice.search(re)
 		if (pos == -1) {
 			if (!wrap) {
@@ -89,7 +89,7 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 		if(!e.highlight) return;
 		const opts = e.highlight.ignoreCase ? 'gi' : 'g'
 
-		const re = new RegExp(e.highlight.word, opts)
+		const re = new RegExp('\\b' + e.highlight.word + '\\b', opts)
 		const pos = slice.search(re)
 		if (pos == -1) {
 			if (!wrap) {

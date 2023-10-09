@@ -3,7 +3,7 @@
     "displayName": "EasyLife",
     "description": "Some Plug-in",
     "version": "0.0.1",
-    "repository":"https://github.com/wobushiludahai/easylife",
+    "repository": "https://github.com/wobushiludahai/easylife",
     "publisher": "landsea",
     "engines": {
         "vscode": "^1.81.0"

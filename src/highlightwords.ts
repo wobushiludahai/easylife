@@ -21,10 +21,12 @@ class HighlightWords {
     private onlyBorder: boolean = false;
     private treeProvider: HighlightTreeProvider;
     private ranges: any;
+    private color_num: number;
 
     constructor() {
         this.words = [];
         this.ranges = [];
+        this.color_num = 0;
 
         let highlightWordsConfig = HighlightConfig.getHighlightwordsConfig();
         this.colors = highlightWordsConfig.colors;
@@ -64,8 +66,8 @@ class HighlightWords {
     }
 
     private createNewDecorator(index?: number): TextEditorDecorationType {
-        let randNumber = Math.floor(Math.random() * this.colors.length);
-        let color = this.colors[randNumber];
+        let colorNumber = this.color_num++ % this.colors.length;
+        let color = this.colors[colorNumber];
 
         var dark: ThemableDecorationRenderOptions = {
             overviewRulerColor: color.dark,
@@ -99,7 +101,7 @@ class HighlightWords {
             this.words.forEach((w, n) => {
                 let decsRange: any = [];
                 const opts = w.ignoreCase ? 'gi' : 'g'
-                const regEx = new RegExp(w.word, opts);
+                const regEx = new RegExp('\\b' + w.word + '\\b', opts);
 
                 if (editor == activeEditor) {
                     this.ranges[w.word] = []

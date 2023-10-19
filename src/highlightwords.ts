@@ -127,13 +127,13 @@ class HighlightWords {
         this.updateDecorations(true)
     }
 
-    public removeAllDecorations() {
+    public removeAll() {
         this.words.forEach((w, n) => {
             this.ranges[w.word] = []
             this.words[n].decoration.dispose();
-            this.words.splice(n, 1)  // remove
         });
 
+        this.words = []
         this.updateSidebar();
     }
 

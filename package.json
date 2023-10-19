@@ -26,6 +26,10 @@
                 "title": "Remove"
             },
             {
+                "command": "easylife.highlightWordsRemoveAll",
+                "title": "RemoveAll"
+            },
+            {
                 "command": "easylife.highlightWordsfindPrevious",
                 "title": "Back",
                 "icon": {
@@ -136,6 +140,10 @@
             "view/item/context": [
                 {
                     "command": "easylife.highlightWordsRemove",
+                    "when": "view == highlightWordsSidebar"
+                },
+                {
+                    "command": "easylife.highlightWordsRemoveAll",
                     "when": "view == highlightWordsSidebar"
                 },
                 {

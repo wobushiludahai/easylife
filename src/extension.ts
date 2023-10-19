@@ -21,6 +21,10 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 		highlightWord.removeSelected(e.label)
 	})
 
+	commands.registerCommand('easylife.highlightWordsRemoveAll', e => {
+		highlightWord.removeAll()
+	})
+
 	window.onDidChangeActiveTextEditor(() => {
 		highlightWord.clearSidebarIndex();
 		highlightWord.updateDecorations(window.activeTextEditor);

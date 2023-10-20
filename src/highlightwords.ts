@@ -109,6 +109,8 @@ class HighlightWords {
                 while (match = regEx.exec(text)) {
                     const startPos = editor.document.positionAt(match.index);
                     const endPos = editor.document.positionAt(match.index + match[0].length);
+                    const TextLine = editor.document.lineAt(startPos.line);
+                    console.log(TextLine.text)
                     const decoration = { range: new Range(startPos, endPos) };
                     decsRange.push(decoration);
                     if (editor == activeEditor) {

@@ -127,14 +127,34 @@
                 }
             }
         },
+        "viewsContainers": {
+            "panel": [
+                {
+                    "id": "highlight-container",
+                    "title": "highlight",
+                    "icon": "resources/icons/arrow-h.svg"
+                }
+            ]
+        },
         "views": {
             "explorer": [
                 {
                     "id": "highlightWordsSidebar",
                     "name": "Highlights",
                     "when": "showSidebar"
+                },
+                {
+                    "id": "nodeDependencies",
+                    "name": "Node Dependencies"
                 }
-            ]
+            ],
+            "highlight-container": [
+                {
+                  "id": "highlight-view",
+                  "type": "webview",
+                  "name": "highlight"
+                }
+              ]
         },
         "menus": {
             "view/item/context": [

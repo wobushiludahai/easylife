@@ -151,7 +151,6 @@
             "highlight-container": [
                 {
                   "id": "highlight-view",
-                  "type": "webview",
                   "name": "highlight"
                 }
               ]

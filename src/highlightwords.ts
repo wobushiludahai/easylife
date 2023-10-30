@@ -2,6 +2,7 @@
 import { window, Range, TextEditorDecorationType, ThemableDecorationRenderOptions, OverviewRulerLane, TreeItem } from "vscode";
 import HighlightConfig from "./config";
 import HighlightTreeProvider from "./wordstree"
+import PreviewTreeProvider from "./highlightpreview";
 
 // 默认全词
 export interface HighlighWordsTable {
@@ -20,12 +21,15 @@ class HighlightWords {
     private colors: highlightWordsColors[];
     private onlyBorder: boolean = false;
     private treeProvider: HighlightTreeProvider;
+    private previewProvider: PreviewTreeProvider;
+    private previewWords: string[];
     private ranges: any;
     private color_num: number;
 
     constructor() {
         this.words = [];
         this.ranges = [];
+        this.previewWords = [];
         this.color_num = 0;
 
         let highlightWordsConfig = HighlightConfig.getHighlightwordsConfig();
@@ -33,15 +37,39 @@ class HighlightWords {
         this.onlyBorder = highlightWordsConfig.onlyBorder;
 
         this.treeProvider = new HighlightTreeProvider(this.getWords());
+        this.previewProvider = new PreviewTreeProvider([]);
         window.registerTreeDataProvider('highlightWordsSidebar', this.treeProvider);
+        window.registerTreeDataProvider('highlight-view', this.previewProvider)
     }
 
     public setDecorators(c: highlightWordsColors[]) { this.colors = c }
     public setOnlyBorder(b: boolean) { this.onlyBorder = b }
     public getWords() { return this.words }
+    public getPreviewWords() { return this.previewWords }
 
     private updateSidebar() {
         this.treeProvider.refresh(this.words)
+    }
+
+    private updatePreview() {
+        const editor = window.activeTextEditor;
+        if ( !editor) return;
+        const text = editor.document.getText();
+        let match;
+        let previewWords : string[] = [];
+        this.words.forEach((w, n) => {
+            const opts = w.ignoreCase ? 'gi' : 'g'
+            const regEx = new RegExp('\\b' + w.word + '\\b', opts);
+
+            while (match = regEx.exec(text)) {
+                const startPos = editor.document.positionAt(match.index);
+                const TextLine = editor.document.lineAt(startPos.line);
+                this.previewWords.push(TextLine.lineNumber + ' ' + TextLine.text)
+            }
+        });
+
+        this.previewWords = previewWords
+        this.previewProvider.refresh(this.previewWords)
     }
 
     public updateSidebarIndex(word: string, range: Range) {
@@ -122,6 +150,7 @@ class HighlightWords {
             });
 
             this.updateSidebar();
+            this.updatePreview();
         })
     }
 
@@ -135,8 +164,10 @@ class HighlightWords {
             this.words[n].decoration.dispose();
         });
 
+        this.previewWords = []
         this.words = []
         this.updateSidebar();
+        this.updatePreview();
     }
 
     public removeSelected(word: string) {
@@ -153,6 +184,7 @@ class HighlightWords {
             this.words.splice(index, 1);    //remove words
 
             this.updateSidebar();
+            this.updatePreview();
         }
     }
 
@@ -187,6 +219,7 @@ class HighlightWords {
             this.words.splice(index, 1);    //remove words
 
             this.updateSidebar();
+            this.updatePreview();
         }
     }
 }

@@ -1,5 +1,5 @@
- 'use strict';
-import { HighlighWordsTable } from './highlightwords'
+'use strict';
+
 import { TreeDataProvider, TreeItem, Event, EventEmitter, Command } from 'vscode'
 
 interface Location {
@@ -7,26 +7,26 @@ interface Location {
     count: number
 }
 
-class HighlightTreeProvider implements TreeDataProvider<HighlightNode> {
+class PreviewTreeProvider implements TreeDataProvider<PreviewNode> {
     private currentWord: string = ''
     private currentIndex: Location = { index: 0, count: 0 }
     private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
     readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 
-    constructor(public words: HighlighWordsTable[]) { }
+    constructor(public words: string[]) { }
 
-    getTreeItem(element: HighlightNode): TreeItem {
+    getTreeItem(element: PreviewNode): TreeItem {
         return element;
     }
 
-    getChildren(element?: HighlightNode): Thenable<HighlightNode[]> {
-        let nodes: HighlightNode[] = this.words.map(w => {
-            return new HighlightNode(w.word, w, this)
+    getChildren(element?: PreviewNode): Thenable<PreviewNode[]> {
+        let nodes: PreviewNode[] = this.words.map(w => {
+            return new PreviewNode(w, w, this)
         })
         return Promise.resolve(nodes)
     }
 
-    public refresh(words: HighlighWordsTable[]): any {
+    public refresh(words: string[]): any {
         this.words = words;
         this._onDidChangeTreeData.fire(null);
     }
@@ -48,11 +48,11 @@ class HighlightTreeProvider implements TreeDataProvider<HighlightNode> {
     }
 }
 
-export class HighlightNode extends TreeItem {
+export class PreviewNode extends TreeItem {
     constructor(
         public readonly label: string,
-        public readonly highlight: HighlighWordsTable,
-        public provider: HighlightTreeProvider,
+        public readonly highlight: string,
+        public provider: PreviewTreeProvider,
         public readonly command?: Command
 
     ) {
@@ -60,7 +60,7 @@ export class HighlightNode extends TreeItem {
     }
 
     private getOpts(): string {
-        const index = this.highlight.word == this.provider.getCurrentWord() ?
+        const index = this.highlight == this.provider.getCurrentWord() ?
         ` ${this.provider.getCurrentIndex().index}/${this.provider.getCurrentIndex().count}` : ''
 
         return index
@@ -79,4 +79,4 @@ export class HighlightNode extends TreeItem {
     contextValue = 'highlights';
 }
 
-export default HighlightTreeProvider
+export default PreviewTreeProvider

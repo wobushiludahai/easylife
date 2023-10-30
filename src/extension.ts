@@ -133,38 +133,10 @@ function registerHighlightWords(context: vscode.ExtensionContext) {
 	commands.executeCommand('setContext', 'showSidebar', configValues.showSidebar)
 }
 
-class 
-
-function registerHightWebView() {
-	const treeData = new TreeDataProvider()
-
-
-	const treeview = vscode.window.createTreeView("highlight-view", {
-		treeDataProvider: new TreeDataProvider()});
-
-		// vscode.window.createTreeView('nodeDependencies', {
-		// 	treeDataProvider: new NodeDependenciesProvider(vscode.workspace.rootPath)
-		// });
-
-
-
-	vscode.window.registerWebviewViewProvider("highlight-view", {
-		resolveWebviewView: (webviewView, context) => {
-			// 在这里设置自定义视图的 HTML 内容、事件处理等
-			 webviewView.webview.html = '<h1>Hello from Webview!</h1>';
-		}
-	}, {
-	 webviewOptions: {
-		retainContextWhenHidden: true
-	  }
-	});
-}
-
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "easylife" is now active!');
 	registerHighlightLine();
 	registerHighlightWords(context);
-	registerHightWebView();
 }
 
 // This method is called when your extension is deactivated

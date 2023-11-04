@@ -53,7 +53,7 @@ class HighlightWords {
 
     private updatePreview() {
         const editor = window.activeTextEditor;
-        if ( !editor) return;
+        if (!editor) return;
         const text = editor.document.getText();
         let match;
         let previewWords : string[] = [];
@@ -64,10 +64,10 @@ class HighlightWords {
             while (match = regEx.exec(text)) {
                 const startPos = editor.document.positionAt(match.index);
                 const TextLine = editor.document.lineAt(startPos.line);
-                this.previewWords.push(TextLine.lineNumber + ' ' + TextLine.text)
+                let view_line = TextLine.lineNumber.toString() + ' ' + TextLine.text
+                previewWords.push(view_line)
             }
         });
-
         this.previewWords = previewWords
         this.previewProvider.refresh(this.previewWords)
     }
@@ -137,8 +137,6 @@ class HighlightWords {
                 while (match = regEx.exec(text)) {
                     const startPos = editor.document.positionAt(match.index);
                     const endPos = editor.document.positionAt(match.index + match[0].length);
-                    const TextLine = editor.document.lineAt(startPos.line);
-                    console.log(TextLine.text)
                     const decoration = { range: new Range(startPos, endPos) };
                     decsRange.push(decoration);
                     if (editor == activeEditor) {
